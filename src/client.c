@@ -63,28 +63,36 @@ int main(int argc, char *argv[]) {
     fflush( stdout );
 
     // Timed send-receive loop
-    uint64_t *times_send = malloc(sizeof(uint64_t) * N_ROUNDS);
-    uint64_t *times_recv = malloc(sizeof(uint64_t) * N_ROUNDS);
+    //uint64_t *times_send = malloc(sizeof(uint64_t) * N_ROUNDS);
+    //uint64_t *times_recv = malloc(sizeof(uint64_t) * N_ROUNDS);
+    uint64_t *times = malloc(sizeof(uint64_t) * N_ROUNDS);
     for (size_t i = 0; i < N_ROUNDS; i++) {
 
         uint64_t tstart = rdtscp();
 
         send_message(config.n_bytes, sockfd, wbuffer);
-        uint64_t tsend = rdtsc();
-        receive_message(config.n_bytes, sockfd, rbuffer);
+        //uint64_t tsend = rdtsc();
+        //receive_message(config.n_bytes, sockfd, rbuffer);
 
         uint64_t tend = rdtsc();
 
-        times_send[i] = tsend - tstart;
-        times_recv[i] = tend - tsend;
+        times[i] = tend - tstart;
     }
     close(sockfd);
-    printf("Done!\nSummary: (time_send,\ttime_recv)");
-    for (size_t i = 0; i < N_ROUNDS; i++) {
-        printf("(%" PRIu64 ",\t%" PRIu64 ")\n", times_send[i], times_recv[i]);
+    //printf("Done!\nSummary: (time_send,\ttime_recv)");
+    /*for (size_t i = 0; i < N_ROUNDS; i++) {
+        printf("(%" PRIu64 ",\t%" PRIu64 ")  ", times_send[i], times_recv[i]);
+	printf("%" PRIu64 "\n", times_recv[i]-times_send[i]);
+    }*/
+    uint64_t avg = 0;
+    for (size_t i = N_WARMUP; i < N_ROUNDS; i++) {
+        avg += times[i];
     }
-    free(times_send);
-    free(times_recv);
+    avg = avg / (N_ROUNDS-N_WARMUP);
+    printf("rtt = %" PRIu64 "us \n", avg/CPU_F);
+    //free(times_send);
+    //free(times_recv);
+    free(times);
     free(rbuffer);
     free(wbuffer);
 

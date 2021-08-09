@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     int i;
     for (i = 0; i < N_ROUNDS; i++) {
         receive_message(config.n_bytes, newsockfd, buffer);
-        send_message(config.n_bytes, newsockfd, buffer);
+        //send_message(config.n_bytes, newsockfd, buffer);
     }
     printf("Done!\n");
 

@@ -4,7 +4,9 @@
 #define DEFAULT_N_BYTES 1
 #define DEFAULT_PORT 8787
 #define DEFAULT_ADDRESS "127.0.0.1"
-#define N_ROUNDS 1000000
+#define N_WARMUP 100
+#define N_ROUNDS 1000
+#define CPU_F 800
 
 struct Config {
     char *address;
